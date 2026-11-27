@@ -15,7 +15,7 @@ import 'dart:ui' show Offset;
 ///    stroke starts. That teaches that a letter has separate parts.
 class TracingEngine {
   TracingEngine(List<List<Offset>> strokes, {this.spacing = 0.025, this.lookahead = 4})
-      : paths = [for (final s in strokes) resample(s, spacing)];
+      : paths = [for (final s in strokes) resample(smooth(s), spacing)];
 
   /// Distance between guide points, in the 0–1 box.
   final double spacing;
@@ -94,6 +94,31 @@ class TracingEngine {
       _needsLift = true;
     }
     return advanced;
+  }
+
+  /// Turns the corner points of a stroke into a smooth curve that passes
+  /// through every point (a Catmull-Rom spline), so letters look hand-written
+  /// rather than angular. Straight two-point strokes are left as they are.
+  static List<Offset> smooth(List<Offset> stroke, {int steps = 8}) {
+    if (stroke.length < 3) return List.of(stroke);
+    final result = <Offset>[stroke.first];
+    for (var i = 0; i < stroke.length - 1; i++) {
+      final p0 = stroke[max(i - 1, 0)];
+      final p1 = stroke[i];
+      final p2 = stroke[i + 1];
+      final p3 = stroke[min(i + 2, stroke.length - 1)];
+      for (var k = 1; k <= steps; k++) {
+        final t = k / steps;
+        final t2 = t * t;
+        final t3 = t2 * t;
+        result.add((p1 * 2 +
+                (p2 - p0) * t +
+                (p0 * 2 - p1 * 5 + p2 * 4 - p3) * t2 +
+                (p1 * 3 - p0 - p2 * 3 + p3) * t3) *
+            0.5);
+      }
+    }
+    return result;
   }
 
   /// Turns a hand-drawn list of corner points into evenly spaced points,

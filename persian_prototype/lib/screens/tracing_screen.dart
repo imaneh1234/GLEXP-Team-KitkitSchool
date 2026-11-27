@@ -29,7 +29,7 @@ class _TracingScreenState extends State<TracingScreen> {
   bool _celebrating = false;
   final Set<String> _completed = {};
 
-  PersianLetter get _letter => prototypeLetters[_letterIndex];
+  PersianLetter get _letter => alphabetSequence[_letterIndex];
 
   @override
   void initState() {
@@ -121,7 +121,7 @@ class _TracingScreenState extends State<TracingScreen> {
               letter: _letter,
               done: done,
               onListen: () => AudioService.instance.say(VoiceScript.letter(_letter)),
-              onNext: () => _selectLetter((_letterIndex + 1) % prototypeLetters.length),
+              onNext: () => _selectLetter((_letterIndex + 1) % alphabetSequence.length),
             );
             return Column(
               children: [
@@ -175,10 +175,10 @@ class _LetterPicker extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        itemCount: prototypeLetters.length,
+        itemCount: alphabetSequence.length,
         separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (context, i) {
-          final letter = prototypeLetters[i];
+          final letter = alphabetSequence[i];
           final isSelected = i == selected;
           return Material(
             color: isSelected ? AppColors.teal : AppColors.card,

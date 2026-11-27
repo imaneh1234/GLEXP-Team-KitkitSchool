@@ -8,6 +8,7 @@ import '../widgets/common.dart';
 import 'about_screen.dart';
 import 'counting_screen.dart';
 import 'letter_sounds_screen.dart';
+import 'reading_screen.dart';
 import 'tracing_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -29,6 +30,13 @@ class HomeScreen extends StatelessWidget {
         icon: Icons.gesture_rounded,
         color: AppColors.saffron,
         builder: (_) => const TracingScreen(),
+      ),
+      _Activity(
+        title: 'بخوانیم',
+        voice: VoiceScript.homeReading,
+        icon: Icons.menu_book_rounded,
+        color: AppColors.leaf,
+        builder: (_) => const ReadingScreen(),
       ),
       _Activity(
         title: 'بشماریم',
@@ -101,7 +109,8 @@ class _ActivityTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final size = (width - 72).clamp(150.0, 230.0);
+    // Two tiles per row on phones, up to four in a row on tablets.
+    final size = ((width - 52) / 2).clamp(140.0, 220.0);
     return Semantics(
       button: true,
       label: activity.title,

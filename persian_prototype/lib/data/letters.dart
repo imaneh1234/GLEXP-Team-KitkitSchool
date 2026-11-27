@@ -1,11 +1,12 @@
 import 'dart:ui' show Offset;
 
-/// One Persian letter as used in the prototype's activities.
+/// One unit of the alphabet sequence: a letter (like ب) or a vowel sign
+/// (like اَ or او), as used in the prototype's activities.
 ///
-/// The letters and their order follow the opening lessons of Iran's Grade 1
-/// Persian textbook (فارسی اول دبستان): آ، ب، د، م، ن، ت، س، ر.
-/// (The textbook also teaches the short vowels  ـَ ـِ ـُ  and the long vowels
-/// او / ای in between; those are planned for the next milestone.)
+/// The units and their order follow the opening lessons of Iran's Grade 1
+/// Persian textbook (فارسی اول دبستان):
+///   آ، ب، اَ، د، م، ن، او، ت، ای، س، اُ، ر، اِ
+/// An education adviser should check this against the current edition.
 class PersianLetter {
   const PersianLetter({
     required this.id,
@@ -14,7 +15,19 @@ class PersianLetter {
     required this.exampleWord,
     required this.joinsToNext,
     required this.strokes,
+    this.isVowel = false,
+    this.customForms,
+    this.customFormLabels,
   });
+
+  /// True for vowel units (اَ اِ اُ او ای). Children learn these as the
+  /// "glue" that turns letters into syllables they can read.
+  final bool isVowel;
+
+  /// For vowel units: example shapes to show instead of letter positions,
+  /// e.g. اَ at the start of a word and بَ after a letter.
+  final List<String>? customForms;
+  final List<String>? customFormLabels;
 
   /// Latin identifier, used for audio file names (e.g. `letter_be.mp3`).
   final String id;
@@ -46,13 +59,14 @@ class PersianLetter {
 
   /// The shapes this letter takes in a word, using the joining line (ـ).
   /// Order: isolated, start of word, middle of word, end of word.
-  List<String> get positionalForms => joinsToNext
-      ? [char, '$charـ', 'ـ$charـ', 'ـ$char']
-      : [char, 'ـ$char'];
+  List<String> get positionalForms =>
+      customForms ??
+      (joinsToNext ? [char, '$charـ', 'ـ$charـ', 'ـ$char'] : [char, 'ـ$char']);
 
   /// Labels to show under each positional form.
   List<String> get positionalFormLabels =>
-      joinsToNext ? const ['تنها', 'اول', 'وسط', 'آخر'] : const ['تنها', 'آخر'];
+      customFormLabels ??
+      (joinsToNext ? const ['تنها', 'اول', 'وسط', 'آخر'] : const ['تنها', 'آخر']);
 
   /// Audio key used to find this letter's recording.
   String get audioKey => 'letter_$id';
@@ -62,7 +76,8 @@ class PersianLetter {
   String get spokenPrompt => '$name، مثلِ $exampleWord';
 }
 
-const List<PersianLetter> prototypeLetters = [
+/// The whole sequence, in textbook order.
+const List<PersianLetter> alphabetSequence = [
   PersianLetter(
     id: 'alef_madda',
     char: 'آ',
@@ -95,6 +110,21 @@ const List<PersianLetter> prototypeLetters = [
       ],
       // One dot below.
       [Offset(0.5, 0.84)],
+    ],
+  ),
+  PersianLetter(
+    id: 'vowel_a',
+    char: 'اَ',
+    name: 'اَ',
+    exampleWord: 'اَسب',
+    joinsToNext: false,
+    isVowel: true,
+    customForms: ['اَ', 'بَ'],
+    customFormLabels: ['اول کلمه', 'با «ب»'],
+    strokes: [
+      // Alef, top to bottom, then the small slanted line above (زبر).
+      [Offset(0.5, 0.3), Offset(0.5, 0.68)],
+      [Offset(0.6, 0.12), Offset(0.42, 0.21)],
     ],
   ),
   PersianLetter(
@@ -156,6 +186,30 @@ const List<PersianLetter> prototypeLetters = [
     ],
   ),
   PersianLetter(
+    id: 'vowel_u',
+    char: 'او',
+    name: 'او',
+    exampleWord: 'توت',
+    joinsToNext: false,
+    isVowel: true,
+    customForms: ['او', 'بو', 'تو'],
+    customFormLabels: ['اول کلمه', 'با «ب»', 'با «ت»'],
+    strokes: [
+      // Alef on the right, then و: round head on the line, tail going down-left.
+      [Offset(0.74, 0.24), Offset(0.74, 0.68)],
+      [
+        Offset(0.44, 0.62),
+        Offset(0.48, 0.53),
+        Offset(0.56, 0.55),
+        Offset(0.57, 0.63),
+        Offset(0.52, 0.7),
+        Offset(0.46, 0.79),
+        Offset(0.36, 0.87),
+        Offset(0.24, 0.9),
+      ],
+    ],
+  ),
+  PersianLetter(
     id: 'te',
     char: 'ت',
     name: 'تِ',
@@ -174,6 +228,31 @@ const List<PersianLetter> prototypeLetters = [
       // Two dots above, right one first.
       [Offset(0.57, 0.46)],
       [Offset(0.43, 0.46)],
+    ],
+  ),
+  PersianLetter(
+    id: 'vowel_i',
+    char: 'ای',
+    name: 'ای',
+    exampleWord: 'سیب',
+    joinsToNext: false,
+    isVowel: true,
+    customForms: ['ای', 'بیـ', 'بی'],
+    customFormLabels: ['اول کلمه', 'وسط', 'آخر'],
+    strokes: [
+      // Alef on the right, then ی: a small curve and a wide bowl to the left.
+      [Offset(0.78, 0.24), Offset(0.78, 0.68)],
+      [
+        Offset(0.6, 0.46),
+        Offset(0.5, 0.52),
+        Offset(0.52, 0.6),
+        Offset(0.62, 0.66),
+        Offset(0.62, 0.76),
+        Offset(0.5, 0.83),
+        Offset(0.32, 0.84),
+        Offset(0.18, 0.78),
+        Offset(0.13, 0.67),
+      ],
     ],
   ),
   PersianLetter(
@@ -202,6 +281,29 @@ const List<PersianLetter> prototypeLetters = [
     ],
   ),
   PersianLetter(
+    id: 'vowel_o',
+    char: 'اُ',
+    name: 'اُ',
+    exampleWord: 'اُردک',
+    joinsToNext: false,
+    isVowel: true,
+    customForms: ['اُ', 'بُ'],
+    customFormLabels: ['اول کلمه', 'با «ب»'],
+    strokes: [
+      // Alef, then the small و-shaped sign above (پیش).
+      [Offset(0.5, 0.36), Offset(0.5, 0.68)],
+      [
+        Offset(0.56, 0.17),
+        Offset(0.58, 0.08),
+        Offset(0.65, 0.05),
+        Offset(0.71, 0.11),
+        Offset(0.66, 0.19),
+        Offset(0.55, 0.24),
+        Offset(0.42, 0.28),
+      ],
+    ],
+  ),
+  PersianLetter(
     id: 're',
     char: 'ر',
     name: 'رِ',
@@ -217,4 +319,23 @@ const List<PersianLetter> prototypeLetters = [
       ],
     ],
   ),
+  PersianLetter(
+    id: 'vowel_e',
+    char: 'اِ',
+    name: 'اِ',
+    exampleWord: 'اِستخر',
+    joinsToNext: false,
+    isVowel: true,
+    customForms: ['اِ', 'بِ'],
+    customFormLabels: ['اول کلمه', 'با «ب»'],
+    strokes: [
+      // Alef, then the small slanted line below (زیر).
+      [Offset(0.5, 0.24), Offset(0.5, 0.68)],
+      [Offset(0.6, 0.78), Offset(0.42, 0.87)],
+    ],
+  ),
 ];
+
+/// Letters (not vowels) that can start a syllable in the reading game.
+List<PersianLetter> get syllableConsonants =>
+    alphabetSequence.where((u) => !u.isVowel && u.id != 'alef_madda').toList();

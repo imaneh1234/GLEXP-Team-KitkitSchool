@@ -12,20 +12,25 @@ It keeps the play-based approach of [Kitkit School](../README.md) but is **rebui
 
 The original Kitkit School apps in this repository are **not changed**.
 
-| Home | Letter sounds | Tracing | Counting |
-|---|---|---|---|
-| ![Home](docs/screenshots/home.png) | ![Sounds](docs/screenshots/letter_sounds.png) | ![Tracing](docs/screenshots/tracing.png) | ![Counting](docs/screenshots/counting.png) |
+| Home | Letter sounds | Tracing | Reading | Counting |
+|---|---|---|---|---|
+| ![Home](docs/screenshots/home.png) | ![Sounds](docs/screenshots/letter_sounds.png) | ![Tracing](docs/screenshots/tracing.png) | ![Reading](docs/screenshots/reading.png) | ![Counting](docs/screenshots/counting.png) |
 
 ## What's in the prototype
 
 | Activity | Inspired by (Kitkit) | What the child does | What it teaches |
 |---|---|---|---|
-| **صدای حرف‌ها** (Letter sounds) | SoundTrain, BirdPhonics | Hears a letter and its example word, taps the matching letter among three. | Linking sounds to letter shapes. |
-| **بنویسیم** (Let's write) | LetterTrace | Traces a letter with a finger: from the green circle, **right to left**, body first, **dots last**. Sees the letter's shapes at the start, middle and end of a word. | Correct stroke order and direction; that Persian letters change shape. |
+| **صدای حرف‌ها** (Letter sounds) | SoundTrain, BirdPhonics | Hears a letter or vowel and its example word, taps the matching card among three. | Linking sounds to letter shapes. |
+| **بنویسیم** (Let's write) | LetterTrace | Traces a letter or vowel with a finger: from the green circle, **right to left**, body first, **dots and vowel signs last**. Sees the shapes at the start, middle and end of a word. | Correct stroke order and direction; that Persian letters change shape. |
+| **بخوانیم** (Let's read) | WordMachine, BirdPhonics | Hears a syllable such as «بُ» and finds it among three cards. Rounds alternate between *same letter, different vowel* (بَ / بِ / بُ) and *same vowel, different letter* (بو / تو / سو). | Decoding: putting a letter and a vowel together, the step before reading words. |
 | **بشماریم** (Let's count) | Counting, FeedingTime | Taps each pomegranate (each tap says the next number and shows it in Persian digits), then picks the right number. | One-to-one counting, number words, Persian digits ۱–۱۰. |
 
-The eight letters — **آ ب د م ن ت س ر** — are the first letters taught in Iran's Grade 1 Persian
-textbook (فارسی اول دبستان), in the same order.
+The 13 units — **آ، ب، اَ، د، م، ن، او، ت، ای، س، اُ، ر، اِ** — are the first lessons of Iran's Grade 1
+Persian textbook (فارسی اول دبستان), in the same order: eight letters plus the three short vowels
+(اَ اِ اُ) and two long vowels (او ای). The reading game combines the seven letters with the six vowels
+into 42 syllables (بَ بِ بُ با بو بی, دَ دِ دُ ...).
+
+All 13 tracing guides on one sheet, for review by a handwriting teacher: [docs/tracing_guides.png](docs/tracing_guides.png).
 
 Design choices for young children:
 
@@ -37,7 +42,8 @@ Design choices for young children:
 
 | What | Where |
 |---|---|
-| Letters, example words, tracing shapes | `lib/data/letters.dart` |
+| Letters and vowels, example words, tracing shapes | `lib/data/letters.dart` |
+| Syllables for the reading game | `lib/data/syllables.dart` |
 | Everything the app says aloud | `lib/data/voice_script.dart` |
 | Checklist for the voice artist | `docs/RECORDING_SCRIPT.md` |
 | Recordings and sound effects | `assets/audio/` |
@@ -48,8 +54,9 @@ Design choices for young children:
 is placed in `assets/audio/`. Until then it uses the device's own Persian text-to-speech voice if one is
 installed (many Android phones have one; browsers often don't), otherwise it stays silent.
 
-**Tracing shapes** are lists of points inside a square from 0 to 1 (0,0 = top-left). They are first
-approximations: a handwriting teacher should review them, and an animator can replace them with precise paths.
+**Tracing shapes** are lists of points inside a square from 0 to 1 (0,0 = top-left); the app draws a smooth
+curve through them. They are first approximations: a handwriting teacher should review them, and an animator
+can replace them with precise paths.
 
 ## Running it (for developers)
 
@@ -58,7 +65,7 @@ Requires Flutter 3.50 or newer.
 ```bash
 cd persian_prototype
 flutter pub get
-flutter test                                       # 13 automated checks
+flutter test                                       # 19 automated checks
 flutter run                                        # on a connected phone or emulator
 flutter build apk --release                        # Android
 flutter build web --release --no-web-resources-cdn # Web, fully offline
@@ -70,7 +77,7 @@ parts from Google's servers, so it also works offline.
 ## Known limits of this prototype
 
 - No recorded voice yet (text-to-speech fallback only).
-- Short vowels ( ـَ ـِ ـُ ) and the long vowels او / ای are not included yet.
+- Reading stops at single syllables; whole words (بابا، آب، نان) are the next step.
 - Progress isn't saved between sessions.
 - Simple drawn graphics only; no illustrations or animations yet.
 - Not yet tested with children.

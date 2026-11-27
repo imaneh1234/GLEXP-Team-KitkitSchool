@@ -1,5 +1,6 @@
 import '../utils/persian_numbers.dart';
 import 'letters.dart';
+import 'syllables.dart';
 
 /// Every sentence the app speaks, in one place.
 ///
@@ -23,10 +24,16 @@ class VoiceScript {
   static const homeSounds = VoiceLine('home_sounds', 'صدای حرف‌ها');
   static const homeTracing = VoiceLine('home_tracing', 'بنویسیم');
   static const homeCounting = VoiceLine('home_counting', 'بشماریم');
+  static const homeReading = VoiceLine('home_reading', 'بخوانیم');
 
   static const soundsInstruction = VoiceLine(
     'sounds_instruction',
     'خوب گوش کن! کدام حرف را شنیدی؟',
+  );
+
+  static const readingInstruction = VoiceLine(
+    'reading_instruction',
+    'گوش کن! کدام را شنیدی؟ آن را پیدا کن.',
   );
 
   static const tracingInstruction = VoiceLine(
@@ -56,8 +63,16 @@ class VoiceScript {
   static VoiceLine letter(PersianLetter l) => VoiceLine(
         l.audioKey,
         l.spokenPrompt,
-        note: 'Say the letter name, a short pause, then the example word. '
-            'An education adviser may prefer the letter SOUND instead of the name.',
+        note: l.isVowel
+            ? 'Say the vowel sound, a short pause, then the example word.'
+            : 'Say the letter name, a short pause, then the example word. '
+                'An education adviser may prefer the letter SOUND instead of the name.',
+      );
+
+  static VoiceLine syllable(Syllable s) => VoiceLine(
+        s.audioKey,
+        s.text,
+        note: 'Only the syllable, clearly and slowly (${s.consonant.name} + ${s.vowel.name}).',
       );
 
   static VoiceLine number(int n) => VoiceLine('number_$n', persianNumberWords[n]!);
@@ -68,7 +83,9 @@ class VoiceScript {
         homeSounds,
         homeTracing,
         homeCounting,
+        homeReading,
         soundsInstruction,
+        readingInstruction,
         tracingInstruction,
         tracingDot,
         countingInstruction,
@@ -76,7 +93,8 @@ class VoiceScript {
         ...praise,
         tryAgain,
         allDone,
-        for (final l in prototypeLetters) letter(l),
+        for (final l in alphabetSequence) letter(l),
+        for (final s in allSyllables) syllable(s),
         for (var n = 1; n <= 10; n++) number(n),
       ];
 
