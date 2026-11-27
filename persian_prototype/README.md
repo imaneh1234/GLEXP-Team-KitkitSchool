@@ -58,6 +58,14 @@ installed (many Android phones have one; browsers often don't), otherwise it sta
 curve through them. They are first approximations: a handwriting teacher should review them, and an animator
 can replace them with precise paths.
 
+## Try it in a browser (iPhone, Android, computer)
+
+The web version is published with GitHub Pages from the `/docs` folder at the root of this repository:
+**https://imaneh1234.github.io/GLEXP-Team-KitkitSchool/**
+
+On an iPhone, open it in Safari, tap Share, then **Add to Home Screen** to get an app icon.
+To update the site after changing the app, run `persian_prototype/tool/build_web_pages.sh` and commit `/docs`.
+
 ## Running it (for developers)
 
 Requires Flutter 3.50 or newer.
